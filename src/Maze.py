@@ -1,5 +1,6 @@
 # This script creates a grid with 20x15 cells.
 
+
 import pygame
 
 BLACK = (0, 0, 0)
@@ -21,7 +22,7 @@ MARGIN = 3
 ROWS = 20
 COLUMNS = 15
 
-# Grid is an array of cells of the maze.
+
 grid = []
 
 
@@ -39,6 +40,10 @@ class Robot:
         self.row = 18
         self.column = 1
         self.direction = "E"
+
+
+# Grid is an array of cells of the maze.
+grid = []
 
 
 for row in range(ROWS):
@@ -245,6 +250,7 @@ while not done:
             row = pos[1] // (HEIGHT + MARGIN)
             print(row, column)
             
+
             if (row < 17 or column > 2) and (row > 2 or column < 12):
                 cell = grid[row][column]
                 cell.obstacle = 1
@@ -305,6 +311,7 @@ while not done:
     # button
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
     screen.blit(text, (405, 45))
+
     clock.tick(60)
     pygame.display.flip()
 
