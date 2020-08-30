@@ -133,19 +133,19 @@ def check_right(robot_):
     column_ = robot_.column
     
     if robot_.direction == "N":
-        if column_ != COLUMNS-2 and check_vw_east(row_, column_):
+        if column_ != COLUMNS-2 and check_obs_east(row_, column_):
             return True
 
     elif robot_.direction == "S":
-        if column_ != 1 and check_vw_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_):
             return True
 
     elif robot_.direction == "E":
-        if row_ != ROWS-2 and check_vw_south(row_, column_):
+        if row_ != ROWS-2 and check_obs_south(row_, column_):
             return True
 
     elif robot_.direction == "W":
-        if row_ != 1 and check_vw_north(row_, column_):
+        if row_ != 1 and check_obs_north(row_, column_):
             return True
 
     return False
@@ -156,19 +156,19 @@ def check_forward(robot_):
     column_ = robot_.column
     
     if robot_.direction == "N": 
-        if row_ != 1 and check_vw_north(row_, column_):
+        if row_ != 1 and check_obs_north(row_, column_):
             return True
 
     elif robot_.direction == "S":
-        if row_ != ROWS-2 and check_vw_south(row_, column_):
+        if row_ != ROWS-2 and check_obs_south(row_, column_):
             return True
 
     elif robot_.direction == "E":
-        if column_ != COLUMNS-2 and check_vw_east(row_, column_):
+        if column_ != COLUMNS-2 and check_obs_east(row_, column_):
             return True
 
     elif robot_.direction == "W":
-        if column_ != 1 and check_vw_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_):
             return True
 
     return False
@@ -179,51 +179,50 @@ def check_left(robot_):
     column_ = robot_.column
     
     if robot_.direction == "N":
-        if column_ != 1 and check_vw_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_):
             return True
 
     elif robot_.direction == "S":
-        if column_ != COLUMNS-2 and check_vw_east(row_, column_):
+        if column_ != COLUMNS-2 and check_obs_east(row_, column_):
             return True
 
     elif robot_.direction == "E":
-        if row_ != 1 and check_vw_north(row_, column_):
+        if row_ != 1 and check_obs_north(row_, column_):
             return True
 
     elif robot_.direction == "W":
-        if row_ != ROWS-2 and check_vw_south(row_, column_):
+        if row_ != ROWS-2 and check_obs_south(row_, column_):
             return True
 
     return False
 
 
-def check_vw_north(row_, column_):
-    if (grid[row_ - 2][column_].virtual_wall, grid[row_ - 2][column_ + 1].virtual_wall, grid[row_ - 2][column_ - 1].virtual_wall) == (0, 0, 0):
+def check_obs_north(row_, column_):
+    if (grid[row_ - 2][column_].obstacle, grid[row_ - 2][column_ + 1].obstacle, grid[row_ - 2][column_ - 1].obstacle) == (0, 0, 0):
         return True
 
     return False
 
 
-def check_vw_south(row_, column_):
-    if (grid[row_ + 2][column_].virtual_wall, grid[row_ + 2][column_ + 1].virtual_wall, grid[row_ + 2][column_ - 1].virtual_wall) == (0, 0, 0):
+def check_obs_south(row_, column_):
+    if (grid[row_ + 2][column_].obstacle, grid[row_ + 2][column_ + 1].obstacle, grid[row_ + 2][column_ - 1].obstacle) == (0, 0, 0):
         return True
 
     return False
 
 
-def check_vw_east(row_, column_):
-    if (grid[row_][column_ + 2].virtual_wall, grid[row_ + 1][column_ + 2].virtual_wall, grid[row_ - 1][column_ + 2].virtual_wall) == (0, 0, 0):
+def check_obs_east(row_, column_):
+    if (grid[row_][column_ + 2].obstacle, grid[row_ + 1][column_ + 2].obstacle, grid[row_ - 1][column_ + 2].obstacle) == (0, 0, 0):
         return True
 
     return False
 
 
-def check_vw_west(row_, column_):
-    if (grid[row_][column_ - 2].virtual_wall, grid[row_ + 1][column_ - 2].virtual_wall, grid[row_ - 1][column_ - 2].virtual_wall) == (0, 0, 0):
+def check_obs_west(row_, column_):
+    if (grid[row_][column_ - 2].obstacle, grid[row_ + 1][column_ - 2].obstacle, grid[row_ - 1][column_ - 2].obstacle) == (0, 0, 0):
         return True
 
     return False
-
 
 
 
