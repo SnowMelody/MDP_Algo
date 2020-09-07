@@ -88,40 +88,36 @@ def update_explored_cells(robot_, grid_):
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
-            #if column_ >= 2: grid_[row_ - 1][column_ - 2].explored = 1
-            if column_ <= COLUMNS - 3:
-                grid_[row_ - 1][column_ + 2].explored = 1
-                grid_[row_ + 1][column_ + 2].explored = 1
+        if column_ <= COLUMNS - 3:
+            grid_[row_ - 1][column_ + 2].explored = 1
+            grid_[row_ + 1][column_ + 2].explored = 1
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
-            if column_ >= 2:
-                grid_[row_ - 1][column_ - 2].explored = 1
-                grid_[row_ + 1][column_ - 2].explored = 1
-            #if column_ <= COLUMNS - 3: grid_[row_ + 1][column_ + 2].explored = 1
+        if column_ >= 2:
+            grid_[row_ - 1][column_ - 2].explored = 1
+            grid_[row_ + 1][column_ - 2].explored = 1
 
     elif robot_.direction == "E":
         if column_ != COLUMNS - 2:
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
-            #if row_ >= 2: grid_[row_ - 2][column_ + 1].explored = 1
-            if row_ <= ROWS - 3:
-                grid_[row_ + 2][column_ - 1].explored = 1
-                grid_[row_ + 2][column_ + 1].explored = 1
+        if row_ <= ROWS - 3:
+            grid_[row_ + 2][column_ - 1].explored = 1
+            grid_[row_ + 2][column_ + 1].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
-            if row_ >= 2:
-                grid_[row_ - 2][column_ - 1].explored = 1
-                grid_[row_ - 2][column_ + 1].explored = 1
-            #if row_ <= ROWS - 3: grid_[row_ + 2][column_ - 1].explored = 1
+        if row_ >= 2:
+            grid_[row_ - 2][column_ - 1].explored = 1
+            grid_[row_ - 2][column_ + 1].explored = 1
 
 
 def check_exploration_status(grid_):
