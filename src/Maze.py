@@ -22,8 +22,8 @@ MARGIN = 3
 ROWS = 20
 COLUMNS = 15
 
-INITIAL_ROBOT_POS_ROW = 18
-INITIAL_ROBOT_POS_COL = 1
+TARGET_ROBOT_POS_ROW = 18
+TARGET_ROBOT_POS_COL = 1
 
 
 class Cell:
@@ -37,7 +37,7 @@ class Cell:
 
 class Robot:
     def __init__(self):
-        self.row = 17
+        self.row = 18
         self.column = 1
         self.direction = "E"
 
@@ -61,88 +61,88 @@ def col_to_make_turn(grid_):
     for i in range(ROWS):
         for j in range(COLUMNS):
             if grid_[i][j].explored == 1:
-                explored_grid[i, j] = 1
+                explored_grid[i][j] = 1
             else:
-                explored_grid[i, j] = 0
+                explored_grid[i][j] = 0
     non_zero_array = np.count_nonzero(explored_grid, axis=0)
 
+    # Returns last index instead of first
+    # idx = np.where(non_zero_array == non_zero_array.min())[0]
+    # return idx[-1]
     return np.argmin(non_zero_array)
-
-
-def turn_left(robot_):
-    if check_left(robot_):
-        if robot_.direction == "E":
-            robot_.direction = "N"
-
-        elif robot_.direction == "N":
-            robot_.direction = "W"
-
-        elif robot_.direction == "W":
-            robot_.direction = "S"
-
-        elif robot_.direction == "S":
-            robot_.direction = "E"
-
-    elif check_forward(robot_):
-        pass
-
-    elif check_right(robot_):
-        if robot_.direction == "E":
-            robot_.direction = "S"
-
-        elif robot_.direction == "N":
-            robot_.direction = "E"
-
-        elif robot_.direction == "W":
-            robot_.direction = "N"
-
-        elif robot_.direction == "S":
-            robot_.direction = "W"
-
-    else:
-        if robot_.direction == "E":
-            robot_.direction = "W"
-
-        elif robot_.direction == "N":
-            robot_.direction = "S"
-
-        elif robot_.direction == "W":
-            robot_.direction = "E"
-
-        elif robot_.direction == "S":
-            robot_.direction = "N"
-
-
-def check_for_wall(robot_):
-    if robot_.direction == 'N':
-        if grid[robot.row - 2][robot.column].virtual_wall == 1:
-            return True
-        else:
-            return False
-    elif robot_.direction == 'S':
-        if grid[robot.row + 2][robot.column].virtual_wall == 1:
-            return True
-        else:
-            return False
-    elif robot_.direction == 'E':
-        if grid[robot.row][robot.column + 2].virtual_wall == 1:
-            return True
-        else:
-            return False
-    else:
-        if grid[robot.row][robot.column - 2].virtual_wall == 1:
-            return True
-        else:
-            return False
 
 
 def update_explored_cells(robot_, grid_):
     row_ = robot_.row
     column_ = robot_.column
 
+    # Mark 3x3 grid occupied by robot as explored
     for i in range(row_ - 1, row_ + 2):
         for j in range(column_ - 1, column_ + 2):
             grid_[i][j].explored = 1
+
+    # Also mark 3 grids directly in front of robot's facing direction as explored (3 front sensors)
+    # And 1 front right + 1 back right sensor? Wrt robot's facing direction (Not sure, I just simulate there, we can change accordingly)
+    if robot_.direction == "N":
+        if row_ != 1:
+            grid_[row_ - 2][column_ - 1].explored = 1
+            grid_[row_ - 2][column_].explored = 1
+            grid_[row_ - 2][column_ + 1].explored = 1
+        if column_ <= COLUMNS - 3:
+            grid_[row_ - 1][column_ + 2].explored = 1
+            grid_[row_ + 1][column_ + 2].explored = 1
+
+    elif robot_.direction == "S":
+        if row_ != ROWS - 2:
+            grid_[row_ + 2][column_ - 1].explored = 1
+            grid_[row_ + 2][column_].explored = 1
+            grid_[row_ + 2][column_ + 1].explored = 1
+        if column_ >= 2:
+            grid_[row_ - 1][column_ - 2].explored = 1
+            grid_[row_ + 1][column_ - 2].explored = 1
+
+    elif robot_.direction == "E":
+        if column_ != COLUMNS - 2:
+            grid_[row_ - 1][column_ + 2].explored = 1
+            grid_[row_][column_ + 2].explored = 1
+            grid_[row_ + 1][column_ + 2].explored = 1
+        if row_ <= ROWS - 3:
+            grid_[row_ + 2][column_ - 1].explored = 1
+            grid_[row_ + 2][column_ + 1].explored = 1
+
+    elif robot_.direction == "W":
+        if column_ != 1:
+            grid_[row_ - 1][column_ - 2].explored = 1
+            grid_[row_][column_ - 2].explored = 1
+            grid_[row_ + 1][column_ - 2].explored = 1
+        if row_ >= 2:
+            grid_[row_ - 2][column_ - 1].explored = 1
+            grid_[row_ - 2][column_ + 1].explored = 1
+
+
+def check_exploration_status(grid_):
+    total_exp_grids = [cell.explored for item in grid_ for cell in item].count(1)
+    print('Explored cells:', total_exp_grids)
+
+    # For checking purposes (to be removed once verified code works properly)
+    if total_exp_grids >= 280:
+        for i in range(ROWS):
+            for j in range(COLUMNS):
+                if grid_[i][j].explored == 0:
+                    print(i, j)
+
+    if total_exp_grids == ROWS * COLUMNS:
+        return True
+
+    return False
+
+
+def update_prev_and_curr_total(grid_, prev_total, curr_total):
+    total_exp_grids = [cell.explored for item in grid_ for cell in item].count(1)
+    prev_total = curr_total
+    curr_total = total_exp_grids
+
+    return prev_total, curr_total
 
 
 def robot_movement(robot_):
@@ -193,16 +193,78 @@ def update_robot_dir_right_wall(robot_):
             robot_.direction = "E"
 
     else:
+        # 180 turn (2 right turns)
         if robot_.direction == "E":
+            robot_.direction = "S"
+            update_explored_cells(robot_, grid)
             robot_.direction = "W"
 
         elif robot_.direction == "N":
+            robot_.direction = "E"
+            update_explored_cells(robot_, grid)
             robot_.direction = "S"
 
         elif robot_.direction == "W":
+            robot_.direction = "N"
+            update_explored_cells(robot_, grid)
             robot_.direction = "E"
 
         elif robot_.direction == "S":
+            robot_.direction = "W"
+            update_explored_cells(robot_, grid)
+            robot_.direction = "N"
+
+
+def update_robot_dir_left_wall(robot_):
+    if check_left(robot_):
+        if robot_.direction == "E":
+            robot_.direction = "N"
+
+        elif robot_.direction == "N":
+            robot_.direction = "W"
+
+        elif robot_.direction == "W":
+            robot_.direction = "S"
+
+        elif robot_.direction == "S":
+            robot_.direction = "E"
+
+    elif check_forward(robot_):
+        pass
+
+    elif check_right(robot_):
+        if robot_.direction == "E":
+            robot_.direction = "S"
+
+        elif robot_.direction == "N":
+            robot_.direction = "E"
+
+        elif robot_.direction == "W":
+            robot_.direction = "N"
+
+        elif robot_.direction == "S":
+            robot_.direction = "W"
+
+    else:
+        # 180 turn (2 left turns)
+        if robot_.direction == "E":
+            robot_.direction = "N"
+            update_explored_cells(robot_, grid)
+            robot_.direction = "W"
+
+        elif robot_.direction == "N":
+            robot_.direction = "W"
+            update_explored_cells(robot_, grid)
+            robot_.direction = "S"
+
+        elif robot_.direction == "W":
+            robot_.direction = "S"
+            update_explored_cells(robot_, grid)
+            robot_.direction = "E"
+
+        elif robot_.direction == "S":
+            robot_.direction = "E"
+            update_explored_cells(robot_, grid)
             robot_.direction = "N"
 
 
@@ -211,11 +273,11 @@ def check_right(robot_):
     column_ = robot_.column
 
     if robot_.direction == "N":
-        if column_ != COLUMNS - 2 and check_obs_east(row_, column_):
+        if column_ != COLUMNS - 2 and check_obs_east(row_, column_) and check_col_right_wall_hug(column_):
             return True
 
     elif robot_.direction == "S":
-        if column_ != 1 and check_obs_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_) and check_col_left_wall_hug(column_):
             return True
 
     elif robot_.direction == "E":
@@ -242,11 +304,11 @@ def check_forward(robot_):
             return True
 
     elif robot_.direction == "E":
-        if column_ != COLUMNS - 2 and check_obs_east(row_, column_):
+        if column_ != COLUMNS - 2 and check_obs_east(row_, column_) and check_col_right_wall_hug(column_):
             return True
 
     elif robot_.direction == "W":
-        if column_ != 1 and check_obs_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_) and check_col_left_wall_hug(column_):
             return True
 
     return False
@@ -257,11 +319,11 @@ def check_left(robot_):
     column_ = robot_.column
 
     if robot_.direction == "N":
-        if column_ != 1 and check_obs_west(row_, column_):
+        if column_ != 1 and check_obs_west(row_, column_) and check_col_left_wall_hug(column_):
             return True
 
     elif robot_.direction == "S":
-        if column_ != COLUMNS - 2 and check_obs_east(row_, column_):
+        if column_ != COLUMNS - 2 and check_obs_east(row_, column_) and check_col_right_wall_hug(column_):
             return True
 
     elif robot_.direction == "E":
@@ -315,6 +377,28 @@ def check_obs_west(row_, column_):
     return False
 
 
+def check_col_right_wall_hug(column_):
+    if col_to_turn == -1 or not right_wall_hug:
+        return True
+
+    else:
+        if column_ != col_to_turn:
+            return True
+
+        return False
+
+
+def check_col_left_wall_hug(column_):
+    if col_to_turn == -1 or right_wall_hug:
+        return True
+
+    else:
+        if column_ != col_to_turn:
+            return True
+
+        return False
+
+
 pygame.init()
 WINDOW_SIZE = [500, 480]
 screen = pygame.display.set_mode(WINDOW_SIZE, pygame.RESIZABLE)
@@ -322,10 +406,10 @@ font = pygame.font.SysFont("comicsansms", 24)
 text = font.render("GO!", True, (0, 128, 0))
 done = False
 move = False
-col_to_turn = -1
 clock = pygame.time.Clock()
-flag = True
-initial_run = 0
+col_to_turn = -1
+right_wall_hug = True
+prev_total, curr_total = 0, 0
 
 while not done:
     pos = pygame.mouse.get_pos()
@@ -349,41 +433,74 @@ while not done:
                 move = True
 
     if move:
-        clock.tick(12)
+        clock.tick(60)
         update_explored_cells(robot, grid)
-        if flag:
+
+        if right_wall_hug:
             update_robot_dir_right_wall(robot)
+
         else:
-            if check_for_wall(robot):
-                update_robot_dir_right_wall(robot)
+            update_robot_dir_left_wall(robot)
 
+        update_explored_cells(robot, grid)
         robot_movement(robot)
-        if (robot.row == INITIAL_ROBOT_POS_ROW or robot.row == INITIAL_ROBOT_POS_ROW-1) and (robot.column == INITIAL_ROBOT_POS_COL or robot.column == INITIAL_ROBOT_POS_COL+1):
-            if initial_run == 1:
-                print("Reached initial state.")
-                col_to_turn = col_to_make_turn(grid)
-            else:
-                initial_run = 1
 
-        if robot.column == col_to_turn and initial_run == 1:
-            flag = not flag
-            turn_left(robot)
-            initial_run = 0
+        # Each right wall hugging run involves robot returning to starting point
+        # Each left wall hugging run involves robot returning to goal point
+        # When all cells are explored and robot returns to starting point, end exploration
+        if robot.row == TARGET_ROBOT_POS_ROW and robot.column == TARGET_ROBOT_POS_COL:
+            col_to_turn = col_to_make_turn(grid)
 
+            if check_exploration_status(grid):
+                if TARGET_ROBOT_POS_ROW != 18 or TARGET_ROBOT_POS_COL != 1:
+                    col_to_turn = -1
+                    TARGET_ROBOT_POS_ROW = 18
+                    TARGET_ROBOT_POS_COL = 1
+
+                else:
+                    print("Exploration complete.")
+                    break
+
+            prev_total, curr_total = update_prev_and_curr_total(grid, prev_total, curr_total)
+
+            # When current run has no new explored cells, change hugging
+            if prev_total == curr_total:
+                if (TARGET_ROBOT_POS_ROW, TARGET_ROBOT_POS_COL) == (18, 1):
+                    right_wall_hug = False
+                    robot.direction = "N"
+                    TARGET_ROBOT_POS_ROW = 1
+                    TARGET_ROBOT_POS_COL = 13
+                    print("Switched to left wall hugging.")
+
+                else:
+                    right_wall_hug = True
+                    robot.direction = "N"
+                    TARGET_ROBOT_POS_ROW = 18
+                    TARGET_ROBOT_POS_COL = 1
+                    print("Switched to right wall hugging.")
+
+            print("Reached target point", TARGET_ROBOT_POS_ROW, TARGET_ROBOT_POS_COL)
 
     screen.fill(BLACK)
 
     for row in range(ROWS):
         for column in range(COLUMNS):
             color = WHITE
+
             if grid[row][column].obstacle == 1:
                 color = RED
+
                 for r in range(row - 1, row + 2):
                     for c in range(column - 1, column + 2):
+                        if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
+                            continue
+
                         if grid[r][c].obstacle == 0:
                             grid[r][c].virtual_wall = 1
+
             elif grid[row][column].virtual_wall == 1:
                 color = GREY
+
             else:
                 if grid[row][column].explored == 1:
                     color = ORANGE
