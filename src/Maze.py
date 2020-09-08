@@ -81,8 +81,9 @@ def update_explored_cells(robot_, grid_):
         for j in range(column_ - 1, column_ + 2):
             grid_[i][j].explored = 1
 
-    # Also mark 3 grids directly in front of robot's facing direction as explored (3 front sensors)
-    # And 1 front right + 1 back right sensor? Wrt robot's facing direction (Not sure, I just simulate there, we can change accordingly)
+    # Also mark 3 grids directly in front of robot's facing direction as explored (3 front sensors) And 1 front right
+    # + 1 back right sensor? Wrt robot's facing direction (Not sure, I just simulate there, we can change accordingly)
+    # Assuming the left sensor's reading is accurate up to 2 cells. can be increased to reduce exploration time.
     if robot_.direction == "N":
         if row_ != 1:
             grid_[row_ - 2][column_ - 1].explored = 1
@@ -91,6 +92,10 @@ def update_explored_cells(robot_, grid_):
         if column_ <= COLUMNS - 3:
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
+        if column_ - 3 >= 0:
+            grid_[row_][column_ - 2].explored = 1
+            if grid_[row_][column_ - 2].obstacle != 1:
+                grid_[row_][column_ - 3].explored = 1
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
@@ -100,6 +105,10 @@ def update_explored_cells(robot_, grid_):
         if column_ >= 2:
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
+        if column_ + 3 < COLUMNS:
+            grid_[row_][column_ + 2].explored = 1
+            if grid_[row_][column_ + 2].obstacle != 1:
+                grid_[row_][column_ + 3].explored = 1
 
     elif robot_.direction == "E":
         if column_ != COLUMNS - 2:
@@ -109,6 +118,10 @@ def update_explored_cells(robot_, grid_):
         if row_ <= ROWS - 3:
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
+        if row_ - 3 >= 0:
+            grid_[row_ - 2][column_].explored = 1
+            if grid_[row_ - 2][column_].obstacle != 1:
+                grid_[row_ - 3][column_].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
@@ -118,6 +131,10 @@ def update_explored_cells(robot_, grid_):
         if row_ >= 2:
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
+        if row_ + 3 < ROWS:
+            grid_[row_ + 2][column_].explored = 1
+            if grid_[row_ + 2][column_].obstacle != 1:
+                grid_[row_ + 3][column_].explored = 1
 
 
 def check_exploration_status(grid_):
@@ -427,6 +444,7 @@ while not done:
             if (row < 17 or column > 2) and (row > 2 or column < 12):
                 cell = grid[row][column]
                 cell.obstacle = 1
+                cell.explored = 1  # Assuming that this is done when implementation of the real run.
                 print("Click ", pos, "Grid coordinates: ", row, column)
 
             if 460 > pos[0] > 300 and 60 > pos[1] > 40:
@@ -528,7 +546,7 @@ while not done:
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
     screen.blit(text, (405, 45))
 
-    clock.tick(60)
+    clock.tick(30)
     pygame.display.flip()
 
 pygame.quit()
