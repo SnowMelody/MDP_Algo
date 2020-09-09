@@ -80,8 +80,9 @@ def update_explored_cells(robot_, grid_):
         for j in range(column_ - 1, column_ + 2):
             grid_[i][j].explored = 1
 
-    # Also mark 3 grids directly in front of robot's facing direction as explored (3 front sensors)
-    # And 1 front right + 1 back right sensor? Wrt robot's facing direction (Not sure, I just simulate there, we can change accordingly)
+    # Mark 3 grids directly in front of robot's facing direction as explored (3 front sensors)
+    # And 1 front right + 1 back right sensor
+    # And 1 long range left sensor
     if robot_.direction == "N":
         if row_ != 1:
             grid_[row_ - 2][column_ - 1].explored = 1
