@@ -11,6 +11,7 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 GREY = (128, 128, 128)
 ORANGE = (255, 165, 0)
+LIGHTGREY = (211, 211, 211)
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 20
@@ -473,7 +474,6 @@ while not done:
                     col_to_turn = -1
                     TARGET_ROBOT_POS_ROW = 18
                     TARGET_ROBOT_POS_COL = 1
-
                 else: 
                     print("Exploration complete.")
                     break
@@ -501,27 +501,57 @@ while not done:
 
     screen.fill(BLACK)
 
+    grid[9][1].obstacle = 1
+
+    grid[14][3].obstacle = 1
+    grid[14][4].obstacle = 1
+    grid[14][5].obstacle = 1
+    grid[15][5].obstacle = 1
+
+    grid[3][4].obstacle = 1
+    grid[4][4].obstacle = 1
+    grid[5][4].obstacle = 1
+
+    grid[0][8].obstacle = 1
+
+    grid[9][6].obstacle = 1
+    grid[9][7].obstacle = 1
+
+    grid[5][9].obstacle = 1
+    grid[5][10].obstacle = 1
+    grid[5][11].obstacle = 1
+    grid[5][12].obstacle = 1
+    grid[5][13].obstacle = 1
+    grid[5][14].obstacle = 1
+
+    grid[14][11].obstacle = 1
+    grid[15][11].obstacle = 1
+    grid[16][11].obstacle = 1
+    grid[17][11].obstacle = 1
+
     for row in range(ROWS):
         for column in range(COLUMNS):
-            color = WHITE
+            color = LIGHTGREY
             
-            if grid[row][column].obstacle == 1:
-                color = RED
-                
-                for r in range(row - 1, row + 2):
-                    for c in range(column - 1, column + 2):
-                        if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
-                            continue
-                        
-                        if grid[r][c].obstacle == 0:
-                            grid[r][c].virtual_wall = 1
+            if grid[row][column].explored:
+                color = WHITE
+                if grid[row][column].obstacle == 1:
+                    color = RED
+                    
+                    for r in range(row - 1, row + 2):
+                        for c in range(column - 1, column + 2):
+                            if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
+                                continue
                             
-            elif grid[row][column].virtual_wall == 1:
-                color = GREY
-                
-            else:
-                if grid[row][column].explored == 1:
-                    color = ORANGE
+                            if grid[r][c].obstacle == 0:
+                                grid[r][c].virtual_wall = 1
+                                
+                elif grid[row][column].virtual_wall == 1:
+                    color = GREY
+                    
+                else:
+                    if grid[row][column].explored == 1:
+                        color = ORANGE
 
             pygame.draw.rect(screen, color,
                              [(MARGIN + WIDTH) * column + MARGIN,
@@ -546,7 +576,7 @@ while not done:
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
     screen.blit(text, (405, 45))
 
-    clock.tick(60)
+    clock.tick(30)
     pygame.display.flip()
 
 pygame.quit()
