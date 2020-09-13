@@ -11,7 +11,6 @@ BLUE = (0, 0, 255)
 YELLOW = (255, 255, 0)
 GREY = (128, 128, 128)
 ORANGE = (255, 165, 0)
-LIGHTGREY = (211, 211, 211)
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 20
@@ -531,7 +530,7 @@ while not done:
 
     for row in range(ROWS):
         for column in range(COLUMNS):
-            color = LIGHTGREY
+            color = ORANGE
             
             if grid[row][column].explored:
                 color = WHITE
@@ -548,10 +547,6 @@ while not done:
                                 
                 elif grid[row][column].virtual_wall == 1:
                     color = GREY
-                    
-                else:
-                    if grid[row][column].explored == 1:
-                        color = ORANGE
 
             pygame.draw.rect(screen, color,
                              [(MARGIN + WIDTH) * column + MARGIN,
