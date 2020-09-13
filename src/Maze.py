@@ -474,7 +474,6 @@ while not done:
                     col_to_turn = -1
                     TARGET_ROBOT_POS_ROW = 18
                     TARGET_ROBOT_POS_COL = 1
-
                 else: 
                     print("Exploration complete.")
                     break
