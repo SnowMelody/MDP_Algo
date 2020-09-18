@@ -79,6 +79,33 @@ grid[15][11].obstacle = 1
 grid[16][11].obstacle = 1
 grid[17][11].obstacle = 1
 robot = Robot()
+grid[9][1].obstacle = 1
+
+grid[14][3].obstacle = 1
+grid[14][4].obstacle = 1
+grid[14][5].obstacle = 1
+grid[15][5].obstacle = 1
+
+grid[3][4].obstacle = 1
+grid[4][4].obstacle = 1
+grid[5][4].obstacle = 1
+
+grid[0][8].obstacle = 1
+
+grid[9][6].obstacle = 1
+grid[9][7].obstacle = 1
+
+grid[5][9].obstacle = 1
+grid[5][10].obstacle = 1
+grid[5][11].obstacle = 1
+grid[5][12].obstacle = 1
+grid[5][13].obstacle = 1
+grid[5][14].obstacle = 1
+
+grid[14][11].obstacle = 1
+grid[15][11].obstacle = 1
+grid[16][11].obstacle = 1
+grid[17][11].obstacle = 1
 
 
 def col_to_make_turn(grid_):
