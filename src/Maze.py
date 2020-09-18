@@ -1,3 +1,5 @@
+# This script creates a grid with 20x15 cells.
+
 import numpy as np
 import pygame
 
@@ -51,61 +53,7 @@ for row in range(ROWS):
             cell.virtual_wall = 1
         grid[row].append(cell)  # Append a cell
 
-grid[9][1].obstacle = 1
-
-grid[14][3].obstacle = 1
-grid[14][4].obstacle = 1
-grid[14][5].obstacle = 1
-grid[15][5].obstacle = 1
-
-grid[3][4].obstacle = 1
-grid[4][4].obstacle = 1
-grid[5][4].obstacle = 1
-
-grid[0][8].obstacle = 1
-
-grid[9][6].obstacle = 1
-grid[9][7].obstacle = 1
-
-grid[5][9].obstacle = 1
-grid[5][10].obstacle = 1
-grid[5][11].obstacle = 1
-grid[5][12].obstacle = 1
-grid[5][13].obstacle = 1
-grid[5][14].obstacle = 1
-
-grid[14][11].obstacle = 1
-grid[15][11].obstacle = 1
-grid[16][11].obstacle = 1
-grid[17][11].obstacle = 1
 robot = Robot()
-grid[9][1].obstacle = 1
-
-grid[14][3].obstacle = 1
-grid[14][4].obstacle = 1
-grid[14][5].obstacle = 1
-grid[15][5].obstacle = 1
-
-grid[3][4].obstacle = 1
-grid[4][4].obstacle = 1
-grid[5][4].obstacle = 1
-
-grid[0][8].obstacle = 1
-
-grid[9][6].obstacle = 1
-grid[9][7].obstacle = 1
-
-grid[5][9].obstacle = 1
-grid[5][10].obstacle = 1
-grid[5][11].obstacle = 1
-grid[5][12].obstacle = 1
-grid[5][13].obstacle = 1
-grid[5][14].obstacle = 1
-
-grid[14][11].obstacle = 1
-grid[15][11].obstacle = 1
-grid[16][11].obstacle = 1
-grid[17][11].obstacle = 1
 
 
 def col_to_make_turn(grid_):
@@ -145,9 +93,9 @@ def update_explored_cells(robot_, grid_):
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
         if column_ - 3 >= 0:
-            grid_[row_][column_ - 3].explored = 1
-            #if grid_[row_][column_ - 2].obstacle != 1:
-               # grid_[row_][column_ - 3].explored = 1
+            grid_[row_][column_ - 2].explored = 1
+            if grid_[row_][column_ - 2].obstacle != 1:
+                grid_[row_][column_ - 3].explored = 1
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
@@ -158,9 +106,9 @@ def update_explored_cells(robot_, grid_):
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
         if column_ + 3 < COLUMNS:
-            grid_[row_][column_ + 3].explored = 1
-            #if grid_[row_][column_ + 2].obstacle != 1:
-            #    grid_[row_][column_ + 3].explored = 1
+            grid_[row_][column_ + 2].explored = 1
+            if grid_[row_][column_ + 2].obstacle != 1:
+                grid_[row_][column_ + 3].explored = 1
 
     elif robot_.direction == "E":
         if column_ != COLUMNS - 2:
@@ -171,9 +119,9 @@ def update_explored_cells(robot_, grid_):
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
         if row_ - 3 >= 0:
-            grid_[row_ - 3][column_].explored = 1
-            #if grid_[row_ - 2][column_].obstacle != 1:
-            #    grid_[row_ - 3][column_].explored = 1
+            grid_[row_ - 2][column_].explored = 1
+            if grid_[row_ - 2][column_].obstacle != 1:
+                grid_[row_ - 3][column_].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
@@ -184,9 +132,9 @@ def update_explored_cells(robot_, grid_):
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
         if row_ + 3 < ROWS:
-            grid_[row_ + 3][column_].explored = 1
-        #    if grid_[row_ + 2][column_].obstacle != 1:
-         #       grid_[row_ + 3][column_].explored = 1
+            grid_[row_ + 2][column_].explored = 1
+            if grid_[row_ + 2][column_].obstacle != 1:
+                grid_[row_ + 3][column_].explored = 1
 
 
 def check_exploration_status(grid_):
@@ -502,7 +450,7 @@ while not done:
                 move = True
 
     if move:
-        clock.tick(1)  # change this value to modify robot's animation speed
+        clock.tick(60)  # change this value to modify robot's animation speed
         update_explored_cells(robot, grid)
 
         if right_wall_hug:
@@ -525,7 +473,6 @@ while not done:
                     col_to_turn = -1
                     TARGET_ROBOT_POS_ROW = 18
                     TARGET_ROBOT_POS_COL = 1
-
                 else:
                     print("Exploration complete.")
                     break
@@ -552,27 +499,53 @@ while not done:
 
     screen.fill(BLACK)
 
+    grid[9][1].obstacle = 1
+
+    grid[14][3].obstacle = 1
+    grid[14][4].obstacle = 1
+    grid[14][5].obstacle = 1
+    grid[15][5].obstacle = 1
+
+    grid[3][4].obstacle = 1
+    grid[4][4].obstacle = 1
+    grid[5][4].obstacle = 1
+
+    grid[0][8].obstacle = 1
+
+    grid[9][6].obstacle = 1
+    grid[9][7].obstacle = 1
+
+    grid[5][9].obstacle = 1
+    grid[5][10].obstacle = 1
+    grid[5][11].obstacle = 1
+    grid[5][12].obstacle = 1
+    grid[5][13].obstacle = 1
+    grid[5][14].obstacle = 1
+
+    grid[14][11].obstacle = 1
+    grid[15][11].obstacle = 1
+    grid[16][11].obstacle = 1
+    grid[17][11].obstacle = 1
+
     for row in range(ROWS):
         for column in range(COLUMNS):
-            color = WHITE
+            color = ORANGE
 
-            if grid[row][column].obstacle == 1:
-                color = RED
+            if grid[row][column].explored:
+                color = WHITE
+                if grid[row][column].obstacle == 1:
+                    color = RED
 
-                for r in range(row - 1, row + 2):
-                    for c in range(column - 1, column + 2):
-                        if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
-                            continue
+                    for r in range(row - 1, row + 2):
+                        for c in range(column - 1, column + 2):
+                            if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
+                                continue
 
-                        if grid[r][c].obstacle == 0:
-                            grid[r][c].virtual_wall = 1
+                            if grid[r][c].obstacle == 0:
+                                grid[r][c].virtual_wall = 1
 
-            elif grid[row][column].virtual_wall == 1:
-                color = GREY
-
-            else:
-                if grid[row][column].explored == 1:
-                    color = ORANGE
+                elif grid[row][column].virtual_wall == 1:
+                    color = GREY
 
             pygame.draw.rect(screen, color,
                              [(MARGIN + WIDTH) * column + MARGIN,
@@ -597,7 +570,7 @@ while not done:
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
     screen.blit(text, (405, 45))
 
-    clock.tick(60)
+    clock.tick(30)
     pygame.display.flip()
 
 pygame.quit()
