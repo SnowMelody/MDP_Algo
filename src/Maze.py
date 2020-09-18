@@ -1,5 +1,3 @@
-# This script creates a grid with 20x15 cells.
-
 import numpy as np
 import pygame
 
@@ -53,7 +51,6 @@ for row in range(ROWS):
             cell.virtual_wall = 1
         grid[row].append(cell)  # Append a cell
 
-robot = Robot()
 grid[9][1].obstacle = 1
 
 grid[14][3].obstacle = 1
@@ -81,6 +78,7 @@ grid[14][11].obstacle = 1
 grid[15][11].obstacle = 1
 grid[16][11].obstacle = 1
 grid[17][11].obstacle = 1
+robot = Robot()
 
 
 def col_to_make_turn(grid_):
@@ -108,11 +106,9 @@ def update_explored_cells(robot_, grid_):
         for j in range(column_ - 1, column_ + 2):
             grid_[i][j].explored = 1
 
-
-    # Also mark 3 grids directly in front of robot's facing direction as explored (3 front sensors) And 1 front right
-    # + 1 back right sensor? Wrt robot's facing direction (Not sure, I just simulate there, we can change accordingly)
-    # Assuming the left sensor's reading is accurate up to 2 cells. can be increased to reduce exploration time.
-
+    # Mark 3 grids directly in front of robot's facing direction as explored (3 front sensors)
+    # And 1 front right + 1 back right sensor
+    # And 1 long range left sensor
     if robot_.direction == "N":
         if row_ != 1:
             grid_[row_ - 2][column_ - 1].explored = 1
@@ -121,11 +117,10 @@ def update_explored_cells(robot_, grid_):
         if column_ <= COLUMNS - 3:
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
-
         if column_ - 3 >= 0:
-            grid_[row_][column_ - 2].explored = 1
-            if grid_[row_][column_ - 2].obstacle != 1:
-                grid_[row_][column_ - 3].explored = 1
+            grid_[row_][column_ - 3].explored = 1
+            #if grid_[row_][column_ - 2].obstacle != 1:
+               # grid_[row_][column_ - 3].explored = 1
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
@@ -135,12 +130,10 @@ def update_explored_cells(robot_, grid_):
         if column_ >= 2:
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
-
         if column_ + 3 < COLUMNS:
-            grid_[row_][column_ + 2].explored = 1
-            if grid_[row_][column_ + 2].obstacle != 1:
-                grid_[row_][column_ + 3].explored = 1
-
+            grid_[row_][column_ + 3].explored = 1
+            #if grid_[row_][column_ + 2].obstacle != 1:
+            #    grid_[row_][column_ + 3].explored = 1
 
     elif robot_.direction == "E":
         if column_ != COLUMNS - 2:
@@ -150,11 +143,10 @@ def update_explored_cells(robot_, grid_):
         if row_ <= ROWS - 3:
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
-
         if row_ - 3 >= 0:
-            grid_[row_ - 2][column_].explored = 1
-            if grid_[row_ - 2][column_].obstacle != 1:
-                grid_[row_ - 3][column_].explored = 1
+            grid_[row_ - 3][column_].explored = 1
+            #if grid_[row_ - 2][column_].obstacle != 1:
+            #    grid_[row_ - 3][column_].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
@@ -164,12 +156,10 @@ def update_explored_cells(robot_, grid_):
         if row_ >= 2:
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
-
         if row_ + 3 < ROWS:
-            grid_[row_ + 2][column_].explored = 1
-            if grid_[row_ + 2][column_].obstacle != 1:
-                grid_[row_ + 3][column_].explored = 1
-
+            grid_[row_ + 3][column_].explored = 1
+        #    if grid_[row_ + 2][column_].obstacle != 1:
+         #       grid_[row_ + 3][column_].explored = 1
 
 
 def check_exploration_status(grid_):
@@ -182,7 +172,6 @@ def check_exploration_status(grid_):
             for j in range(COLUMNS):
                 if grid_[i][j].explored == 0:
                     print(i, j)
-
 
     if total_exp_grids == ROWS * COLUMNS:
         return True
@@ -464,7 +453,6 @@ col_to_turn = -1
 right_wall_hug = True
 prev_total, curr_total = 0, 0
 
-
 while not done:
     pos = pygame.mouse.get_pos()
 
@@ -481,14 +469,13 @@ while not done:
             if (row < 17 or column > 2) and (row > 2 or column < 12):
                 cell = grid[row][column]
                 cell.obstacle = 1
-                cell.explored = 1  # Assuming that this is done when implementation of the real run.
                 print("Click ", pos, "Grid coordinates: ", row, column)
 
             if 460 > pos[0] > 300 and 60 > pos[1] > 40:
                 move = True
 
     if move:
-        clock.tick(60)
+        clock.tick(1)  # change this value to modify robot's animation speed
         update_explored_cells(robot, grid)
 
         if right_wall_hug:
@@ -497,45 +484,8 @@ while not done:
         else:
             update_robot_dir_left_wall(robot)
 
-
-        update_explored_cells(robot, grid) 
+        update_explored_cells(robot, grid)
         robot_movement(robot)
-
-        # Each right wall hugging run involves robot returning to starting point
-        # Each left wall hugging run involves robot returning to goal point
-        # When all cells are explored and robot returns to starting point, end exploration
-        if robot.row == TARGET_ROBOT_POS_ROW and robot.column == TARGET_ROBOT_POS_COL:
-            col_to_turn = col_to_make_turn(grid)
-            
-            if check_exploration_status(grid):
-                if TARGET_ROBOT_POS_ROW != 18 or TARGET_ROBOT_POS_COL != 1:
-                    col_to_turn = -1
-                    TARGET_ROBOT_POS_ROW = 18
-                    TARGET_ROBOT_POS_COL = 1
-
-                else: 
-                    print("Exploration complete.")
-                    break
-                       
-            prev_total, curr_total = update_prev_and_curr_total(grid, prev_total, curr_total)
-
-            # When current run has no new explored cells, change hugging
-            if prev_total == curr_total:
-                if (TARGET_ROBOT_POS_ROW, TARGET_ROBOT_POS_COL) == (18, 1):
-                    right_wall_hug = False
-                    robot.direction = "N"
-                    TARGET_ROBOT_POS_ROW = 1
-                    TARGET_ROBOT_POS_COL = 13
-                    print("Switched to left wall hugging.")
-
-                else:
-                    right_wall_hug = True
-                    robot.direction = "N"
-                    TARGET_ROBOT_POS_ROW = 18
-                    TARGET_ROBOT_POS_COL = 1
-                    print("Switched to right wall hugging.")
-                
-            print("Reached target point", TARGET_ROBOT_POS_ROW, TARGET_ROBOT_POS_COL)
 
         # Each right wall hugging run involves robot returning to starting point
         # Each left wall hugging run involves robot returning to goal point
@@ -578,7 +528,7 @@ while not done:
     for row in range(ROWS):
         for column in range(COLUMNS):
             color = WHITE
-            
+
             if grid[row][column].obstacle == 1:
                 color = RED
 
@@ -586,7 +536,6 @@ while not done:
                     for c in range(column - 1, column + 2):
                         if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
                             continue
-
 
                         if grid[r][c].obstacle == 0:
                             grid[r][c].virtual_wall = 1
@@ -621,7 +570,7 @@ while not done:
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
     screen.blit(text, (405, 45))
 
-    clock.tick(30)
+    clock.tick(60)
     pygame.display.flip()
 
 pygame.quit()
