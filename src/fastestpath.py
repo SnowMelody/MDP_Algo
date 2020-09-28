@@ -30,7 +30,11 @@ def return_path(current_node,maze):
     current = current_node
     while current is not None:
         path.append([current.position, current.direction])
+        prev = current
         current = current.parent
+        if current is not None:
+            if prev.direction != current.direction:
+                path.append([current.position, prev.direction])
     # Return reversed path as we need to show from start to end path
     path = path[::-1]
     # start_value = 0

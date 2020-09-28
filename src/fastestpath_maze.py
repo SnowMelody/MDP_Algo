@@ -40,7 +40,7 @@ class Robot:
     def __init__(self):
         self.row = 18
         self.column = 1
-        self.direction = "E"
+        self.direction = "N"
 
 
 # Grid is an array of cells of the maze.
@@ -141,7 +141,10 @@ while not done:
             if 460 > pos[0] > 300 and 60 > pos[1] > 40:
                 move = True
     if move:
-        clock.tick(60)
+        clock.tick(30)
+        if i == len(path):
+            print("GOAL REACHED")
+            break
         robot.row, robot.column = path[i][0]
         robot.direction = path[i][1]
         i += 1
@@ -176,6 +179,24 @@ while not done:
                      [(MARGIN + WIDTH) * (robot.column - 1) + MARGIN,
                       (MARGIN + HEIGHT) * (robot.row - 1) + MARGIN,
                       WIDTH * 3 + MARGIN * 2, HEIGHT * 3 + MARGIN * 2])
+    
+    if robot.direction == 'N':
+        row = robot.row - 1
+        column = robot.column
+    elif robot.direction == 'S':
+        row = robot.row + 1
+        column = robot.column
+    elif robot.direction == 'E':
+        row = robot.row
+        column = robot.column + 1
+    else:
+        row = robot.row
+        column = robot.column - 1
+
+    pygame.draw.rect(screen, ORANGE,
+                             [(MARGIN + WIDTH) * column + MARGIN,
+                              (MARGIN + HEIGHT) * row + MARGIN,
+                              WIDTH, HEIGHT])
 
     # button
     pygame.draw.rect(screen, WHITE, (380, 40, 80, 20))
