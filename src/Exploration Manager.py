@@ -1,3 +1,5 @@
+import json
+import pickle
 import socket
 import numpy as np
 
@@ -28,7 +30,7 @@ class Connection:
     def __init__(self):
         self.socket = 0
         self.host = '192.168.22.1'
-        self.port = 9988
+        self.port = 9999
 
     def connect_to_rpi(self):
         self.socket = socket.create_connection((self.host, self.port))
@@ -67,6 +69,8 @@ def create_maze_grid(rows, columns):  # creates grid and updates it with cell ob
         grid_temp.append([])
         for column in range(columns):
             cell = Cell(row, column, 0)
+            if row > 16 and column < 3:
+                cell.explored = 1
             if row < 1 or row > 18 or column < 1 or column > 13:
                 cell.virtual_wall = 1
             grid_temp[row].append(cell)
@@ -90,14 +94,14 @@ def check_exploration_status(grid_):
     return False
 
 
-def update_robot_position(robot_, pre_dir):
-    if robot_.direction == pre_dir and pre_dir == 'N':
+def update_robot_position(robot_):
+    if robot_.direction == 'N':
         robot_.row -= 1
-    elif robot_.direction == pre_dir and pre_dir == 'S':
+    elif robot_.direction == 'S':
         robot_.row += 1
-    elif robot_.direction == pre_dir and pre_dir == 'E':
+    elif robot_.direction == 'E':
         robot_.column += 1
-    elif robot_.direction == pre_dir and pre_dir == 'W':
+    elif robot_.direction == 'W':
         robot_.column -= 1
     else:
         pass
@@ -457,6 +461,44 @@ def update_robot_dir_left_wall(grid, robot_):
     return robot_, robot_status_update_ad_temp
 
 
+def send_data_simulator(grid, robot_):
+    db = {'robot': robot_, 'grid': grid}
+    dbfile = open('examplePickle', 'ab')
+    # source, destination
+    pickle.dump(grid, db)
+    dbfile.close()
+
+
+def make_mdf_string(grid, robot):
+    mdf_exploration = '11'
+    mdf_obstacle = ''
+    temp_debug = []
+    for i in range(ROWS - 1, -1, -1):
+        temp_debug.append([])
+        for j in range(COLUMNS):
+            mdf_exploration = mdf_exploration + str(grid[i][j].explored)
+            if grid[i][j].explored == 1:
+                temp_debug[ROWS - i - 1].append(1)
+                mdf_obstacle = mdf_obstacle + str(grid[i][j].obstacle)
+
+    if len(mdf_obstacle) % 8 is not 0:
+        dummy = '0' * (8 - (len(mdf_obstacle) % 8))
+        mdf_obstacle = dummy + mdf_obstacle
+
+    mdf_exploration = mdf_exploration + '11'
+    mdf_exploration_hex = hex(int(mdf_exploration, 2))[2:].rstrip('L')
+    mdf_obstacle_hex = hex(int(mdf_obstacle, 2))[2:].rstrip('L')
+    no_of_digits_obs = int(len(mdf_obstacle) / 4)
+    mdf_obstacle_hex = "0" * (no_of_digits_obs - len(mdf_obstacle_hex)) + mdf_obstacle_hex
+    mdf_json = {'map': {'exploration': mdf_exploration_hex,
+                        'obstacle': mdf_obstacle_hex,
+                        'robotPos': [robot.column, robot.row, robot.direction]}}
+    mdf_json = json.dumps(mdf_json)
+    mdf_json = 'a|' + mdf_json
+
+    return mdf_json
+
+
 def col_to_make_turn(grid_):
     explored_grid = np.empty([20, 15], dtype=int)
     for i in range(ROWS):
@@ -493,9 +535,10 @@ def main():
     robot = Robot()
     grid = create_maze_grid(ROWS, COLUMNS)
     while exploration_done is not True:
-        pre_robot_dir = robot.direction
+
         sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
         sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
+        print(sensor_readings_ad)
         sensor_data = parse_sensor_data(sensor_readings_ad)
         grid = update_explored_cells(robot, grid, sensor_data)
         if right_wall_hug:
@@ -503,7 +546,7 @@ def main():
         else:
             robot, robot_status_update = update_robot_dir_left_wall(grid, robot)
 
-        robot = update_robot_position(robot, pre_robot_dir)
+        robot = update_robot_position(robot)
 
         # Each right wall hugging run involves robot returning to starting point
         # Each left wall hugging run involves robot returning to goal point
@@ -538,8 +581,13 @@ def main():
                     target_robot_pos_col = 1
                     print("Switched to right wall hugging.")
 
-        robot_status_update_formatted = 'h' + robot_status_update + ' ' + 'a' + robot_status_update
+        robot_status_update_formatted = 'h|' + robot_status_update + '|a|' + robot_status_update
+        mdf_status_update = make_mdf_string(grid, robot)
+
+        print(robot.row, robot.column)
+        #send_data_simulator(grid)
         connection_rpi.send_to_rpi(robot_status_update_formatted.encode('UTF-8'))
+        connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
 
 
 if __name__ == '__main__':
