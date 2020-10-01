@@ -148,6 +148,7 @@ def check_exploration_status(grid_):
                 if grid_[i][j].explored == 0:
                     print(i, j)
 
+
     if total_exp_grids == ROWS * COLUMNS:
         return True
 
@@ -451,6 +452,7 @@ while not done:
 
     if move:
         clock.tick(60)  # change this value to modify robot's animation speed
+
         update_explored_cells(robot, grid)
 
         if right_wall_hug:
@@ -460,6 +462,7 @@ while not done:
             update_robot_dir_left_wall(robot)
 
         update_explored_cells(robot, grid)
+
         robot_movement(robot)
 
         # Each right wall hugging run involves robot returning to starting point
@@ -473,7 +476,8 @@ while not done:
                     col_to_turn = -1
                     TARGET_ROBOT_POS_ROW = 18
                     TARGET_ROBOT_POS_COL = 1
-                else:
+
+                else: 
                     print("Exploration complete.")
                     break
 
@@ -496,6 +500,7 @@ while not done:
                     print("Switched to right wall hugging.")
 
             print("Reached target point", TARGET_ROBOT_POS_ROW, TARGET_ROBOT_POS_COL)
+
 
     screen.fill(BLACK)
 
@@ -530,7 +535,6 @@ while not done:
     for row in range(ROWS):
         for column in range(COLUMNS):
             color = ORANGE
-
             if grid[row][column].explored:
                 color = WHITE
                 if grid[row][column].obstacle == 1:
@@ -543,7 +547,7 @@ while not done:
 
                             if grid[r][c].obstacle == 0:
                                 grid[r][c].virtual_wall = 1
-
+                                
                 elif grid[row][column].virtual_wall == 1:
                     color = GREY
 
