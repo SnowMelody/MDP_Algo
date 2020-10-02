@@ -118,7 +118,7 @@ def main():
             for column in range(COLUMNS):
                 color = ORANGE
 
-                if grid[row][column].explored:
+                if not grid[row][column].explored:
                     color = WHITE
                     if grid[row][column].obstacle == 1:
                         color = RED
@@ -130,6 +130,10 @@ def main():
 
                                 if grid[r][c].obstacle == 0:
                                     grid[r][c].virtual_wall = 1
+                                    pygame.draw.rect(screen, GREY,
+                                                    [(MARGIN + WIDTH) * c + MARGIN,
+                                                    (MARGIN + HEIGHT) * r + MARGIN,
+                                                    WIDTH, HEIGHT])
 
                     elif grid[row][column].virtual_wall == 1:
                         color = GREY

@@ -463,9 +463,9 @@ def update_robot_dir_left_wall(grid, robot_):
 
 def send_data_simulator(grid, robot_):
     db = {'robot': robot_, 'grid': grid}
-    dbfile = open('examplePickle', 'ab')
+    dbfile = open('examplePickle', 'wb')
     # source, destination
-    pickle.dump(grid, db)
+    pickle.dump(db, dbfile)
     dbfile.close()
 
 
