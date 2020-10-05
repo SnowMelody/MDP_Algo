@@ -3,6 +3,7 @@ import pickle
 import socket
 import numpy as np
 from multiprocessing.connection import Client
+from fastestpath import search
 ROWS = 20
 COLUMNS = 15
 
@@ -549,6 +550,43 @@ def update_prev_and_curr_total(grid_, curr_total):
     curr_total = total_exp_grids
 
     return prev_total, curr_total
+
+def fastest_path(grid_):
+    maze = [[0 for j in range(COLUMNS)] for i in range(ROWS)]
+
+    for row in range(ROWS):
+        for column in range(COLUMNS):
+            if grid_[row][column].obstacle:
+                for r in range(row - 1, row + 2):
+                    for c in range(column - 1, column + 2):
+                        if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
+                            continue
+                        
+                        if grid_[r][c].obstacle == 0:
+                            grid[r][c].virtual_wall = 1
+
+    for i in range(ROWS):
+        for j in range(COLUMNS):
+            if grid_[i][j].obstacle:
+                maze[i][j] = 1
+            if grid_[i][j].virtual_wall:
+                maze[i][j] = 2
+            grid[i][j].explored = 1
+
+    path = search(maze, 1, [18, 1], [1, 13])
+
+    movement = []
+    for i in range(len(path)):
+        if i == 0:
+            count = 0
+        elif path[i-1][1] == path[i][1]:
+            count += 1
+        else:
+            movement.append([count, path[i-1][1]])
+            count = 0
+    movement.append([count, path[-1][1]])
+
+    return movement
 
 
 def main():
