@@ -2,7 +2,7 @@ import json
 import pickle
 import socket
 import numpy as np
-
+from multiprocessing.connection import Client
 ROWS = 20
 COLUMNS = 15
 
@@ -151,13 +151,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 1][column_ + 2].explored = 1
         if column_ - 3 >= 0:  # adjust this part again based on data format.
             if sensor_data['LL'] == 0:
-                grid_[row_][column_ - 3].explored = 1
+                grid_[row_-1][column_ - 3].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_][column_ - 2].obstacle = 1
+                grid_[row_-1][column_ - 2].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_][column_ - 2].obstacle = 1
-                grid_[row_][column_ - 3].explored = 1
-            grid_[row_][column_ - 2].explored = 1
+                grid_[row_-1][column_ - 2].obstacle = 1
+                grid_[row_-1][column_ - 3].explored = 1
+            grid_[row_-1][column_ - 2].explored = 1
             # if grid_[row_][column_ - 2].obstacle != 1:
             # grid_[row_][column_ - 3].explored = 1
     elif robot_.direction == "S":
@@ -180,13 +180,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 1][column_ - 2].explored = 1
         if column_ + 3 < COLUMNS:
             if sensor_data['LL'] == 0:
-                grid_[row_][column_ + 3].explored = 1
+                grid_[row_+1][column_ + 3].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_][column_ + 2].obstacle = 1
+                grid_[row_ +1][column_ + 2].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_][column_ + 3].obstacle = 1
-                grid_[row_][column_ + 3].explored = 1
-            grid_[row_][column_ + 2].explored = 1
+                grid_[row_+1][column_ + 3].obstacle = 1
+                grid_[row_+1][column_ + 3].explored = 1
+            grid_[row_+1][column_ + 2].explored = 1
             # if grid_[row_][column_ + 2].obstacle != 1:
             #    grid_[row_][column_ + 3].explored = 1
     elif robot_.direction == "E":
@@ -209,13 +209,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 2][column_ + 1].explored = 1
         if row_ - 3 >= 0:
             if sensor_data['LL'] == 0:
-                grid_[row_ - 3][column_].explored = 1
+                grid_[row_ - 3][column_+1].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_ - 2][column_].obstacle = 1
+                grid_[row_ - 2][column_+1].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_ - 3][column_].obstacle = 1
-                grid_[row_ - 3][column_].explored = 1
-            grid_[row_ - 2][column_].explored = 1
+                grid_[row_ - 3][column_+1].obstacle = 1
+                grid_[row_ - 3][column_+1].explored = 1
+            grid_[row_ - 2][column_+1].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
@@ -237,13 +237,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ - 2][column_ + 1].explored = 1
         if row_ + 3 < ROWS:
             if sensor_data['LL'] == 0:
-                grid_[row_ + 3][column_].explored = 1
+                grid_[row_ + 3][column_-1].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_ + 2][column_].obstacle = 1
+                grid_[row_ + 2][column_-1].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_ + 3][column_].obstacle = 1
-                grid_[row_ + 3][column_].explored = 1
-            grid_[row_ + 2][column_].explored = 1
+                grid_[row_ + 3][column_-1].obstacle = 1
+                grid_[row_ + 3][column_-1].explored = 1
+            grid_[row_ + 2][column_-1].explored = 1
         #    if grid_[row_ + 2][column_].obstacle != 1:
         #       grid_[row_ + 3][column_].explored = 1
     return grid_
@@ -555,7 +555,7 @@ def main():
     target_robot_pos_row = 18
     target_robot_pos_col = 1
     exploration_done = False
-
+    #conn = Client(('localhost', 6000), authkey=b'secret password')
     global col_to_turn, right_wall_hug
     prev_explored_total, curr_explored_total = 0, 0
     connection_rpi = Connection()
@@ -600,6 +600,7 @@ def main():
                     target_robot_pos_row = 1
                     target_robot_pos_col = 13
                     print("Switched to left wall hugging.")
+                    robot = update_robot_position(robot)
 
                 else:
                     right_wall_hug = True
@@ -608,11 +609,14 @@ def main():
                     target_robot_pos_row = 18
                     target_robot_pos_col = 1
                     print("Switched to right wall hugging.")
+                    robot = update_robot_position(robot)
 
         robot_status_update_formatted = 'h|' + robot_status_update + '|a|' + robot_status_update
         mdf_status_update = make_mdf_string(grid, robot)
 
         print(robot.row, robot.column)
+
+      #  conn.send([grid, robot])
         send_data_simulator(grid, robot)
         connection_rpi.send_to_rpi(robot_status_update_formatted.encode('UTF-8'))
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
