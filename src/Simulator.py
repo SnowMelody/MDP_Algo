@@ -1,5 +1,5 @@
 import pickle
-
+from multiprocessing.connection import Listener
 import pygame
 
 BLACK = (0, 0, 0)
@@ -84,9 +84,10 @@ def main():
     move = False
     grid = create_grid(ROWS, COLUMNS)
     robot = Robot()
-
+    listener = Listener(('localhost', 6000), authkey=b'secret password')
+    conn = listener.accept()
+    print("connection established", listener.last_accepted)
     while not done:
-
         for event in pygame.event.get():  # User did something
             if event.type == pygame.QUIT:  # If user clicked close
                 done = True  # Flag that we are done so we exit this loop
@@ -97,21 +98,15 @@ def main():
                 row = pos[1] // (HEIGHT + MARGIN)
                 print(row, column)
 
-                if (row < 17 or column > 2) and (row > 2 or column < 12):
-                    cell = grid[row][column]
-                    cell.obstacle = 1
-                    print("Click ", pos, "Grid coordinates: ", row, column)
-
                 if 460 > pos[0] > 300 and 60 > pos[1] > 40:
                     move = True
         if move:
             clock.tick(60)  # change this value to modify robot's animation speed
             #   robot = robot_movement(robot)
             try:
-                dbfile = open('examplePickle', 'rb')
-                db = pickle.load(dbfile)
-                grid = db['grid']
-                robot = db['robot']
+                msg = conn.recv()
+                grid = msg[0]
+                robot = msg[1]
             except Exception as e:
                 print(e)
         for row in range(ROWS):
