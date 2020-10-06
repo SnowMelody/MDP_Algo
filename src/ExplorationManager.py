@@ -4,6 +4,7 @@ import socket
 import numpy as np
 from multiprocessing.connection import Client
 from fastestpath import search
+
 ROWS = 20
 COLUMNS = 15
 
@@ -152,13 +153,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 1][column_ + 2].explored = 1
         if column_ - 3 >= 0:  # adjust this part again based on data format.
             if sensor_data['LL'] == 0:
-                grid_[row_-1][column_ - 3].explored = 1
+                grid_[row_ - 1][column_ - 3].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_-1][column_ - 2].obstacle = 1
+                grid_[row_ - 1][column_ - 2].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_-1][column_ - 2].obstacle = 1
-                grid_[row_-1][column_ - 3].explored = 1
-            grid_[row_-1][column_ - 2].explored = 1
+                grid_[row_ - 1][column_ - 2].obstacle = 1
+                grid_[row_ - 1][column_ - 3].explored = 1
+            grid_[row_ - 1][column_ - 2].explored = 1
             # if grid_[row_][column_ - 2].obstacle != 1:
             # grid_[row_][column_ - 3].explored = 1
     elif robot_.direction == "S":
@@ -181,13 +182,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 1][column_ - 2].explored = 1
         if column_ + 3 < COLUMNS:
             if sensor_data['LL'] == 0:
-                grid_[row_+1][column_ + 3].explored = 1
+                grid_[row_ + 1][column_ + 3].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_ +1][column_ + 2].obstacle = 1
+                grid_[row_ + 1][column_ + 2].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_+1][column_ + 3].obstacle = 1
-                grid_[row_+1][column_ + 3].explored = 1
-            grid_[row_+1][column_ + 2].explored = 1
+                grid_[row_ + 1][column_ + 3].obstacle = 1
+                grid_[row_ + 1][column_ + 3].explored = 1
+            grid_[row_ + 1][column_ + 2].explored = 1
             # if grid_[row_][column_ + 2].obstacle != 1:
             #    grid_[row_][column_ + 3].explored = 1
     elif robot_.direction == "E":
@@ -210,13 +211,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ + 2][column_ + 1].explored = 1
         if row_ - 3 >= 0:
             if sensor_data['LL'] == 0:
-                grid_[row_ - 3][column_+1].explored = 1
+                grid_[row_ - 3][column_ + 1].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_ - 2][column_+1].obstacle = 1
+                grid_[row_ - 2][column_ + 1].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_ - 3][column_+1].obstacle = 1
-                grid_[row_ - 3][column_+1].explored = 1
-            grid_[row_ - 2][column_+1].explored = 1
+                grid_[row_ - 3][column_ + 1].obstacle = 1
+                grid_[row_ - 3][column_ + 1].explored = 1
+            grid_[row_ - 2][column_ + 1].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
@@ -238,13 +239,13 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
             grid_[row_ - 2][column_ + 1].explored = 1
         if row_ + 3 < ROWS:
             if sensor_data['LL'] == 0:
-                grid_[row_ + 3][column_-1].explored = 1
+                grid_[row_ + 3][column_ - 1].explored = 1
             if sensor_data['LL'] == 1:
-                grid_[row_ + 2][column_-1].obstacle = 1
+                grid_[row_ + 2][column_ - 1].obstacle = 1
             elif sensor_data['LL'] == 2:
-                grid_[row_ + 3][column_-1].obstacle = 1
-                grid_[row_ + 3][column_-1].explored = 1
-            grid_[row_ + 2][column_-1].explored = 1
+                grid_[row_ + 3][column_ - 1].obstacle = 1
+                grid_[row_ + 3][column_ - 1].explored = 1
+            grid_[row_ + 2][column_ - 1].explored = 1
         #    if grid_[row_ + 2][column_].obstacle != 1:
         #       grid_[row_ + 3][column_].explored = 1
     return grid_
@@ -490,7 +491,6 @@ def update_robot_dir_left_wall(grid, robot_):
 
 
 def send_data_simulator(grid, robot_):
-
     db = {'robot': robot_, 'grid': grid}
     dbfile = open('grid_file', 'wb')
     # source, destination
@@ -551,6 +551,7 @@ def update_prev_and_curr_total(grid_, curr_total):
 
     return prev_total, curr_total
 
+
 def fastest_path(grid_):
     maze = [[0 for j in range(COLUMNS)] for i in range(ROWS)]
 
@@ -561,9 +562,9 @@ def fastest_path(grid_):
                     for c in range(column - 1, column + 2):
                         if r < 0 or r >= ROWS or c < 0 or c >= COLUMNS:
                             continue
-                        
+
                         if grid_[r][c].obstacle == 0:
-                            grid[r][c].virtual_wall = 1
+                            grid_[r][c].virtual_wall = 1
 
     for i in range(ROWS):
         for j in range(COLUMNS):
@@ -571,7 +572,7 @@ def fastest_path(grid_):
                 maze[i][j] = 1
             if grid_[i][j].virtual_wall:
                 maze[i][j] = 2
-            grid[i][j].explored = 1
+            grid_[i][j].explored = 1
 
     path = search(maze, 1, [18, 1], [1, 13])
 
@@ -579,10 +580,10 @@ def fastest_path(grid_):
     for i in range(len(path)):
         if i == 0:
             count = 0
-        elif path[i-1][1] == path[i][1]:
+        elif path[i - 1][1] == path[i][1]:
             count += 1
         else:
-            movement.append([count, path[i-1][1]])
+            movement.append([count, path[i - 1][1]])
             count = 0
     movement.append([count, path[-1][1]])
 
@@ -593,20 +594,24 @@ def main():
     target_robot_pos_row = 18
     target_robot_pos_col = 1
     exploration_done = False
-    #conn = Client(('localhost', 6000), authkey=b'secret password')
+    fastest_eligible = False
+    # conn = Client(('localhost', 6000), authkey=b'secret password')
     global col_to_turn, right_wall_hug
     prev_explored_total, curr_explored_total = 0, 0
     connection_rpi = Connection()
     connection_rpi.connect_to_rpi()
     robot = Robot()
     grid = create_maze_grid(ROWS, COLUMNS)
-    while exploration_done is not True:
 
+    while exploration_done is not True:
         sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
         sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
         print(sensor_readings_ad)
-        sensor_data = parse_sensor_data(sensor_readings_ad)
-        grid = update_explored_cells(robot, grid, sensor_data)
+        if sensor_readings_ad == "begin fastest" and fastest_eligible is True:
+            fast_path = fastest_path(grid)
+        else:
+            sensor_data = parse_sensor_data(sensor_readings_ad)
+            grid = update_explored_cells(robot, grid, sensor_data)
         if right_wall_hug:
             robot, robot_status_update = update_robot_dir_right_wall(grid, robot)
         else:
@@ -628,6 +633,7 @@ def main():
                 else:
                     exploration_done = True
                     print("Exploration complete.")
+                    fastest_eligible = True
 
             prev_explored_total, curr_explored_total = update_prev_and_curr_total(grid, curr_explored_total)
             if prev_explored_total == curr_explored_total:
@@ -654,7 +660,7 @@ def main():
 
         print(robot.row, robot.column)
 
-      #  conn.send([grid, robot])
+        #  conn.send([grid, robot])
         send_data_simulator(grid, robot)
         connection_rpi.send_to_rpi(robot_status_update_formatted.encode('UTF-8'))
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
