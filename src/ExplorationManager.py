@@ -577,16 +577,16 @@ def fastest_path(grid_, waypoint):
     path = search(maze, 1, [18, 1], waypoint)
     path += search(maze, 1, waypoint, [1, 13])[1:]
 
-    movement = []
+    movement = ''
     for i in range(len(path)):
         if i == 0:
             count = 0
-        elif path[i - 1][1] == path[i][1]:
+        elif path[i-1][1] == path[i][1]:
             count += 1
         else:
-            movement.append([count, path[i - 1][1]])
+            movement += str(count) + path[i-1][1]
             count = 0
-    movement.append([count, path[-1][1]])
+    movement += str(count) + path[i-1][1]
 
     return movement
 
