@@ -551,7 +551,7 @@ def update_prev_and_curr_total(grid_, curr_total):
 
     return prev_total, curr_total
 
-def fastest_path(grid_):
+def fastest_path(grid_, waypoint):
     maze = [[0 for j in range(COLUMNS)] for i in range(ROWS)]
 
     for row in range(ROWS):
@@ -573,7 +573,8 @@ def fastest_path(grid_):
                 maze[i][j] = 2
             grid[i][j].explored = 1
 
-    path = search(maze, 1, [18, 1], [1, 13])
+    path = search(maze, 1, [18, 1], waypoint)
+    path += search(maze, 1, waypoint, [1, 13])[1:]
 
     movement = []
     for i in range(len(path)):
