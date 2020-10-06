@@ -105,7 +105,21 @@ for i in range(ROWS):
             maze[i][j] = 2
         grid[i][j].explored = 1
 
-path = search(maze, 1, [18, 1], [1, 13])
+path = search(maze, 1, [18, 1], [7, 13])
+path += search(maze, 1, [7, 13], [1, 13])[1:]
+print(path)
+
+movement = ''
+for i in range(len(path)):
+    if i == 0:
+        count = 0
+    elif path[i-1][1] == path[i][1]:
+        count += 1
+    else:
+        movement += str(count) + path[i-1][1]
+        count = 0
+movement += str(count) + path[i-1][1]
+print(movement)
 
 pygame.init()
 WINDOW_SIZE = [500, 480]
@@ -115,9 +129,6 @@ text = font.render("GO!", True, (0, 128, 0))
 done = False
 move = False
 clock = pygame.time.Clock()
-col_to_turn = -1
-right_wall_hug = True
-prev_total, curr_total = 0, 0
 
 i = 0
 while not done:
