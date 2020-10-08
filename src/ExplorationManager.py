@@ -137,23 +137,35 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
         if row_ != 1:
             if sensor_data['FL']:
                 grid_[row_ - 2][column_ - 1].obstacle = 1
-            if sensor_data['FC'] == 1:
+            else:
+                grid_[row_ - 2][column_ - 1].obstacle = 0
+            if sensor_data['FC']:
                 grid_[row_ - 2][column_].obstacle = 1
+            else:
+                grid_[row_ - 2][column_].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
+            else:
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
         if column_ <= COLUMNS - 3:
             if sensor_data['RF']:
                 grid_[row_ - 1][column_ + 2].obstacle = 1
+            else:
+                grid_[row_ - 1][column_ + 2].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
+            else:
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
         if column_ - 3 >= 0:  # adjust this part again based on data format.
             if sensor_data['LL'] == 0:
                 grid_[row_ - 1][column_ - 3].explored = 1
+                grid_[row_ - 1][column_ - 3].obstacle = 0
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
             elif sensor_data['LL'] == 2:
@@ -166,23 +178,35 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
         if row_ != ROWS - 2:
             if sensor_data['FL']:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_ + 2][column_].obstacle = 1
+            else:
+                grid_[row_ + 2][column_].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ + 2][column_ + 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ + 1].obstacle = 0
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
         if column_ >= 2:
             if sensor_data['RF']:
                 grid_[row_ + 1][column_ - 2].obstacle = 1
+            else:
+                grid_[row_ + 1][column_ - 2].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
+            else:
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
         if column_ + 3 < COLUMNS:
             if sensor_data['LL'] == 0:
                 grid_[row_ + 1][column_ + 3].explored = 1
+                grid_[row_ + 1][column_ + 3].obstacle = 0
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
             elif sensor_data['LL'] == 2:
@@ -195,23 +219,35 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
         if column_ != COLUMNS - 2:
             if sensor_data['FL']:
                 grid_[row_ - 1][column_ + 2].obstacle = 1
+            else:
+                grid_[row_ - 1][column_ + 2].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_][column_ + 2].obstacle = 1
+            else:
+                grid_[row_][column_ + 2].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
+            else:
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
         if row_ <= ROWS - 3:
             if sensor_data['RF']:
                 grid_[row_ + 2][column_ + 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ + 1].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
         if row_ - 3 >= 0:
             if sensor_data['LL'] == 0:
                 grid_[row_ - 3][column_ + 1].explored = 1
+                grid_[row_ - 3][column_ + 1].obstacle = 0
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
             elif sensor_data['LL'] == 2:
@@ -223,23 +259,35 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
         if column_ != 1:
             if sensor_data['FL']:
                 grid_[row_ + 1][column_ - 2].obstacle = 1
+            else:
+                grid_[row_ + 1][column_ - 2].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_][column_ - 2].obstacle = 1
+            else:
+                grid_[row_][column_ - 2].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
+            else:
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
         if row_ >= 2:
             if sensor_data['RF']:
                 grid_[row_ - 2][column_ - 1].obstacle = 1
+            else:
+                grid_[row_ - 2][column_ - 1].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
+            else:
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
         if row_ + 3 < ROWS:
             if sensor_data['LL'] == 0:
                 grid_[row_ + 3][column_ - 1].explored = 1
+                grid_[row_ + 3][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
             elif sensor_data['LL'] == 2:
@@ -610,6 +658,7 @@ def main():
         print(sensor_readings_ad)
         if sensor_readings_ad == "begin fastest" and fastest_eligible is True:
             fast_path = fastest_path(grid)
+           # TODO: send the fastest path to rpi
         else:
             sensor_data = parse_sensor_data(sensor_readings_ad)
             grid = update_explored_cells(robot, grid, sensor_data)
