@@ -712,6 +712,7 @@ def fastest_path(grid_, waypoint):
             movement += str(count) + path[i-1][1]
             count = 0
     movement += str(count) + path[i-1][1]
+    movement += 'l'
 
     return movement
 
