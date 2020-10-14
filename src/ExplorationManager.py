@@ -682,6 +682,8 @@ def fastest_path(grid_, waypoint):
 
     for row in range(ROWS):
         for column in range(COLUMNS):
+            if not grid_[row][column].explored:
+                grid_[row][column].obstacle = 1
             if grid_[row][column].obstacle:
                 for r in range(row - 1, row + 2):
                     for c in range(column - 1, column + 2):
@@ -697,7 +699,6 @@ def fastest_path(grid_, waypoint):
                 maze[i][j] = 1
             if grid_[i][j].virtual_wall:
                 maze[i][j] = 2
-            grid_[i][j].explored = 1
 
     path = search(maze, 1, [18, 1], waypoint)
     path += search(maze, 1, waypoint, [1, 13])[1:]
