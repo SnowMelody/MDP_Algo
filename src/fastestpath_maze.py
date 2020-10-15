@@ -56,6 +56,10 @@ for row in range(ROWS):
 
 robot = Robot()
 
+for i in range(ROWS):
+    for j in range(COLUMNS):
+        grid[i][j].explored = 1
+
 grid[9][1].obstacle = 1
 
 grid[14][3].obstacle = 1
@@ -84,10 +88,15 @@ grid[15][11].obstacle = 1
 grid[16][11].obstacle = 1
 grid[17][11].obstacle = 1
 
+grid[19][3].explored = 0
+grid[19][4].explored = 0
+
 maze = [[0 for j in range(COLUMNS)] for i in range(ROWS)]
 
 for row in range(ROWS):
     for column in range(COLUMNS):
+        if not grid[row][column].explored:
+            grid[row][column].obstacle = 1
         if grid[row][column].obstacle:
             for r in range(row - 1, row + 2):
                 for c in range(column - 1, column + 2):
@@ -103,9 +112,22 @@ for i in range(ROWS):
             maze[i][j] = 1
         if grid[i][j].virtual_wall:
             maze[i][j] = 2
-        grid[i][j].explored = 1
 
-path = search(maze, 1, [18, 1], [1, 13])
+path = search(maze, 1, [18, 1], [7, 13])
+path += search(maze, 1, [7, 13], [1, 13])[1:]
+print(path)
+
+movement = ''
+for i in range(len(path)):
+    if i == 0:
+        count = 0
+    elif path[i-1][1] == path[i][1]:
+        count += 1
+    else:
+        movement += str(count) + path[i-1][1]
+        count = 0
+movement += str(count) + path[i-1][1]
+print(movement)
 
 pygame.init()
 WINDOW_SIZE = [500, 480]
@@ -115,9 +137,6 @@ text = font.render("GO!", True, (0, 128, 0))
 done = False
 move = False
 clock = pygame.time.Clock()
-col_to_turn = -1
-right_wall_hug = True
-prev_total, curr_total = 0, 0
 
 i = 0
 while not done:

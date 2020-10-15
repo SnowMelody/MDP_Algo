@@ -143,236 +143,236 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
         if row_ != 1:
             if sensor_data['FL']:
                 grid_[row_ - 2][column_ - 1].obstacle = 1
-            # else:
-            #     grid_[row_ - 2][column_ - 1].obstacle = 0
+            else:
+                grid_[row_ - 2][column_ - 1].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_ - 2][column_].obstacle = 1
-            # else:
-            #     grid_[row_ - 2][column_].obstacle = 0
+            else:
+                grid_[row_ - 2][column_].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
-            # else:
-            #     grid_[row_ - 2][column_ + 1].obstacle = 0
+            else:
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
         if column_ <= COLUMNS - 3:
             if sensor_data['RF']:
                 grid_[row_ - 1][column_ + 2].obstacle = 1
-            # else:
-            #     grid_[row_ - 1][column_ + 2].obstacle = 0
+            else:
+                grid_[row_ - 1][column_ + 2].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
-            # else:
-            #     grid_[row_ + 1][column_ + 2].obstacle = 0
+            else:
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
         if column_ - 5 >= 0:  # adjust this part again based on data format.
             if sensor_data['LL'] == 0:
                 grid_[row_ - 1][column_ - 5].explored = 1
-                # grid_[row_ - 1][column_ - 5].obstacle = 0
+                grid_[row_ - 1][column_ - 5].obstacle = 0
                 grid_[row_ - 1][column_ - 4].explored = 1
-                # grid_[row_ - 1][column_ - 4].obstacle = 0
+                grid_[row_ - 1][column_ - 4].obstacle = 0
                 grid_[row_ - 1][column_ - 3].explored = 1
-                # grid_[row_ - 1][column_ - 3].obstacle = 0
-                # grid_[row_ - 1][column_ - 2].obstacle = 0
+                grid_[row_ - 1][column_ - 3].obstacle = 0
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
             elif sensor_data['LL'] == 2:
                 grid_[row_ - 1][column_ - 3].obstacle = 1
                 grid_[row_ - 1][column_ - 3].explored = 1
-                # grid_[row_ - 1][column_ - 2].obstacle = 0
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             elif sensor_data['LL'] == 3:
                 grid_[row_ - 1][column_ - 4].explored = 1
                 grid_[row_ - 1][column_ - 4].obstacle = 1
-                # grid_[row_ - 1][column_ - 3].obstacle = 0
+                grid_[row_ - 1][column_ - 3].obstacle = 0
                 grid_[row_ - 1][column_ - 3].explored = 1
-                # grid_[row_ - 1][column_ - 2].obstacle = 0
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             elif sensor_data['LL'] == 4:
                 grid_[row_ - 1][column_ - 5].explored = 1
                 grid_[row_ - 1][column_ - 5].obstacle = 1
                 grid_[row_ - 1][column_ - 4].explored = 1
-                # grid_[row_ - 1][column_ - 4].obstacle = 0
-                # grid_[row_ - 1][column_ - 3].obstacle = 0
+                grid_[row_ - 1][column_ - 4].obstacle = 0
+                grid_[row_ - 1][column_ - 3].obstacle = 0
                 grid_[row_ - 1][column_ - 3].explored = 1
-                # grid_[row_ - 1][column_ - 2].obstacle = 0
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             grid_[row_ - 1][column_ - 2].explored = 1
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
             if sensor_data['FL']:
-                grid_[row_ + 2][column_ + 1].obstacle = 1
-            # else:
-            #     grid_[row_ + 2][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_ + 2][column_].obstacle = 1
-            # else:
-            #     grid_[row_ + 2][column_].obstacle = 0
+            else:
+                grid_[row_ + 2][column_].obstacle = 0
             if sensor_data['FR']:
-                grid_[row_ + 2][column_ - 1].obstacle = 1
-            # else:
-            #     grid_[row_ + 2][column_ + 1].obstacle = 0
+                grid_[row_ + 2][column_ + 1].obstacle = 1
+            else:
+                grid_[row_ + 2][column_ + 1].obstacle = 0
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
         if column_ >= 2:
             if sensor_data['RF']:
                 grid_[row_ + 1][column_ - 2].obstacle = 1
-            # else:
-            #     grid_[row_ + 1][column_ - 2].obstacle = 0
+            else:
+                grid_[row_ + 1][column_ - 2].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
-            # else:
-            #     grid_[row_ - 1][column_ - 2].obstacle = 0
+            else:
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
         if column_ + 5 < COLUMNS:
             if sensor_data['LL'] == 0:
-                # grid_[row_ + 1][column_ + 5].obstacle = 0
+                grid_[row_ + 1][column_ + 5].obstacle = 0
                 grid_[row_ + 1][column_ + 5].explored = 1
-                # grid_[row_ + 1][column_ + 4].obstacle = 0
+                grid_[row_ + 1][column_ + 4].obstacle = 0
                 grid_[row_ + 1][column_ + 4].explored = 1
-                # grid_[row_ + 1][column_ + 3].obstacle = 0
+                grid_[row_ + 1][column_ + 3].obstacle = 0
                 grid_[row_ + 1][column_ + 3].explored = 1
-                # grid_[row_ + 1][column_ + 2].obstacle = 0
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
             elif sensor_data['LL'] == 2:
                 grid_[row_ + 1][column_ + 3].obstacle = 1
                 grid_[row_ + 1][column_ + 3].explored = 1
-                # grid_[row_ + 1][column_ + 2].obstacle = 0
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             elif sensor_data['LL'] == 3:
                 grid_[row_ + 1][column_ + 4].obstacle = 1
                 grid_[row_ + 1][column_ + 4].explored = 1
-                # grid_[row_ + 1][column_ + 3].obstacle = 0
+                grid_[row_ + 1][column_ + 3].obstacle = 0
                 grid_[row_ + 1][column_ + 3].explored = 1
-                # grid_[row_ + 1][column_ + 2].obstacle = 0
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             elif sensor_data['LL'] == 4:
                 grid_[row_ + 1][column_ + 5].obstacle = 1
                 grid_[row_ + 1][column_ + 5].explored = 1
-                # grid_[row_ + 1][column_ + 4].obstacle = 0
+                grid_[row_ + 1][column_ + 4].obstacle = 0
                 grid_[row_ + 1][column_ + 4].explored = 1
-                # grid_[row_ + 1][column_ + 3].obstacle = 0
+                grid_[row_ + 1][column_ + 3].obstacle = 0
                 grid_[row_ + 1][column_ + 3].explored = 1
-                # grid_[row_ + 1][column_ + 2].obstacle = 0
+                grid_[row_ + 1][column_ + 2].obstacle = 0
 
             grid_[row_ + 1][column_ + 2].explored = 1
     elif robot_.direction == "E":
         if column_ != COLUMNS - 2:
             if sensor_data['FL']:
                 grid_[row_ - 1][column_ + 2].obstacle = 1
-            # else:
-            #     grid_[row_ - 1][column_ + 2].obstacle = 0
+            else:
+                grid_[row_ - 1][column_ + 2].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_][column_ + 2].obstacle = 1
-            # else:
-            #     grid_[row_][column_ + 2].obstacle = 0
+            else:
+                grid_[row_][column_ + 2].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ + 1][column_ + 2].obstacle = 1
-            # else:
-            #     grid_[row_ + 1][column_ + 2].obstacle = 0
+            else:
+                grid_[row_ + 1][column_ + 2].obstacle = 0
             grid_[row_ - 1][column_ + 2].explored = 1
             grid_[row_][column_ + 2].explored = 1
             grid_[row_ + 1][column_ + 2].explored = 1
         if row_ <= ROWS - 3:
             if sensor_data['RF']:
                 grid_[row_ + 2][column_ + 1].obstacle = 1
-            # else:
-            #     grid_[row_ + 2][column_ + 1].obstacle = 0
+            else:
+                grid_[row_ + 2][column_ + 1].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
-            # else:
-            #     grid_[row_ + 2][column_ - 1].obstacle = 0
+            else:
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             grid_[row_ + 2][column_ - 1].explored = 1
             grid_[row_ + 2][column_ + 1].explored = 1
         if row_ - 5 >= 0:
             if sensor_data['LL'] == 0:
-                # grid_[row_ - 5][column_ + 1].obstacle = 0
+                grid_[row_ - 5][column_ + 1].obstacle = 0
                 grid_[row_ - 5][column_ + 1].explored = 1
-                # grid_[row_ - 4][column_ + 1].obstacle = 0
+                grid_[row_ - 4][column_ + 1].obstacle = 0
                 grid_[row_ - 4][column_ + 1].explored = 1
-                # grid_[row_ - 3][column_ + 1].obstacle = 0
+                grid_[row_ - 3][column_ + 1].obstacle = 0
                 grid_[row_ - 3][column_ + 1].explored = 1
-                # grid_[row_ - 2][column_ + 1].obstacle = 0
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
             elif sensor_data['LL'] == 2:
                 grid_[row_ - 3][column_ + 1].obstacle = 1
                 grid_[row_ - 3][column_ + 1].explored = 1
-                # grid_[row_ - 2][column_ + 1].obstacle = 0
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             elif sensor_data['LL'] == 3:
                 grid_[row_ - 4][column_ + 1].obstacle = 1
                 grid_[row_ - 4][column_ + 1].explored = 1
-                # grid_[row_ - 3][column_ + 1].obstacle = 0
+                grid_[row_ - 3][column_ + 1].obstacle = 0
                 grid_[row_ - 3][column_ + 1].explored = 1
-                # grid_[row_ - 2][column_ + 1].obstacle = 0
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             elif sensor_data['LL'] == 4:
                 grid_[row_ - 5][column_ + 1].obstacle = 1
                 grid_[row_ - 5][column_ + 1].explored = 1
-                # grid_[row_ - 4][column_ + 1].obstacle = 0
+                grid_[row_ - 4][column_ + 1].obstacle = 0
                 grid_[row_ - 4][column_ + 1].explored = 1
-                # grid_[row_ - 3][column_ + 1].obstacle = 0
+                grid_[row_ - 3][column_ + 1].obstacle = 0
                 grid_[row_ - 3][column_ + 1].explored = 1
-                # grid_[row_ - 2][column_ + 1].obstacle = 0
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             grid_[row_ - 2][column_ + 1].explored = 1
 
     elif robot_.direction == "W":
         if column_ != 1:
             if sensor_data['FL']:
                 grid_[row_ + 1][column_ - 2].obstacle = 1
-            # else:
-            #     grid_[row_ + 1][column_ - 2].obstacle = 0
+            else:
+                grid_[row_ + 1][column_ - 2].obstacle = 0
             if sensor_data['FC']:
                 grid_[row_][column_ - 2].obstacle = 1
-            # else:
-            #     grid_[row_][column_ - 2].obstacle = 0
+            else:
+                grid_[row_][column_ - 2].obstacle = 0
             if sensor_data['FR']:
                 grid_[row_ - 1][column_ - 2].obstacle = 1
-            # else:
-            #     grid_[row_ - 1][column_ - 2].obstacle = 0
+            else:
+                grid_[row_ - 1][column_ - 2].obstacle = 0
             grid_[row_ - 1][column_ - 2].explored = 1
             grid_[row_][column_ - 2].explored = 1
             grid_[row_ + 1][column_ - 2].explored = 1
         if row_ >= 2:
             if sensor_data['RF']:
                 grid_[row_ - 2][column_ - 1].obstacle = 1
-            # else:
-            #     grid_[row_ - 2][column_ - 1].obstacle = 0
+            else:
+                grid_[row_ - 2][column_ - 1].obstacle = 0
             if sensor_data['RB']:
                 grid_[row_ - 2][column_ + 1].obstacle = 1
-            # else:
-            #     grid_[row_ - 2][column_ + 1].obstacle = 0
+            else:
+                grid_[row_ - 2][column_ + 1].obstacle = 0
             grid_[row_ - 2][column_ - 1].explored = 1
             grid_[row_ - 2][column_ + 1].explored = 1
         if row_ + 5 < ROWS:
             if sensor_data['LL'] == 0:
-                # grid_[row_ + 5][column_ - 1].obstacle = 0
+                grid_[row_ + 5][column_ - 1].obstacle = 0
                 grid_[row_ + 5][column_ - 1].explored = 1
-                # grid_[row_ + 4][column_ - 1].obstacle = 0
+                grid_[row_ + 4][column_ - 1].obstacle = 0
                 grid_[row_ + 4][column_ - 1].explored = 1
-                # grid_[row_ + 3][column_ - 1].obstacle = 0
+                grid_[row_ + 3][column_ - 1].obstacle = 0
                 grid_[row_ + 3][column_ - 1].explored = 1
-                # grid_[row_ + 2][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             if sensor_data['LL'] == 1:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
             elif sensor_data['LL'] == 2:
                 grid_[row_ + 3][column_ - 1].obstacle = 1
                 grid_[row_ + 3][column_ - 1].explored = 1
-                # grid_[row_ + 2][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             elif sensor_data['LL'] == 3:
                 grid_[row_ + 4][column_ - 1].obstacle = 1
                 grid_[row_ + 4][column_ - 1].explored = 1
-                # grid_[row_ + 3][column_ - 1].obstacle = 0
+                grid_[row_ + 3][column_ - 1].obstacle = 0
                 grid_[row_ + 3][column_ - 1].explored = 1
-                # grid_[row_ + 2][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             elif sensor_data['LL'] == 4:
                 grid_[row_ + 5][column_ - 1].obstacle = 1
                 grid_[row_ + 5][column_ - 1].explored = 1
-                # grid_[row_ + 4][column_ - 1].obstacle = 0
+                grid_[row_ + 4][column_ - 1].obstacle = 0
                 grid_[row_ + 4][column_ - 1].explored = 1
-                # grid_[row_ + 3][column_ - 1].obstacle = 0
+                grid_[row_ + 3][column_ - 1].obstacle = 0
                 grid_[row_ + 3][column_ - 1].explored = 1
-                # grid_[row_ + 2][column_ - 1].obstacle = 0
+                grid_[row_ + 2][column_ - 1].obstacle = 0
             grid_[row_ + 2][column_ - 1].explored = 1
 
     return grid_
@@ -684,6 +684,8 @@ def fastest_path(grid_, waypoint):
 
     for row in range(ROWS):
         for column in range(COLUMNS):
+            if not grid_[row][column].explored:
+                grid_[row][column].obstacle = 1
             if grid_[row][column].obstacle:
                 for r in range(row - 1, row + 2):
                     for c in range(column - 1, column + 2):
@@ -699,7 +701,6 @@ def fastest_path(grid_, waypoint):
                 maze[i][j] = 1
             if grid_[i][j].virtual_wall:
                 maze[i][j] = 2
-            grid_[i][j].explored = 1
 
     path = search(maze, 1, [18, 1], waypoint)
     path += search(maze, 1, waypoint, [1, 13])[1:]
@@ -708,13 +709,13 @@ def fastest_path(grid_, waypoint):
     for i in range(len(path)):
         if i == 0:
             count = 0
-        elif path[i - 1][1] == path[i][1]:
+        elif path[i-1][1] == path[i][1]:
             count += 1
         else:
-            movement += path[i - 1][1] + str(count)
+            movement += str(count) + path[i-1][1]
             count = 0
-    movement += path[i - 1][1] + str(count)
-    movement = 'M' + movement + 'l'
+    movement += str(count) + path[i-1][1]
+    movement ='M' + movement + 'l'
 
     return movement
 
@@ -730,7 +731,7 @@ def main():
     connection_rpi = Connection()
     connection_rpi.connect_to_rpi()
     # enable the bottom line for no android start.
-    # connection_rpi.send_to_rpi('h|B'.encode('UTF-8'))
+    #connection_rpi.send_to_rpi('h|B'.encode('UTF-8'))
     robot = Robot()
     grid = create_maze_grid(ROWS, COLUMNS)
 
@@ -740,7 +741,7 @@ def main():
         print(sensor_readings_ad)
         if sensor_readings_ad == 'imgSuccess':
             continue
-
+    
         if sensor_readings_ad == "beginFastest":
             if fastest_eligible is True:
                 fast_path = fastest_path(grid)
@@ -804,20 +805,13 @@ def main():
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
 
     if fastest_eligible is True:
-        fast_path = fastest_path(grid, [7, 13])
-        print(fast_path)
-        begin_fastest = False
-        while not begin_fastest:
-            sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
-            sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
-            print(sensor_readings_ad)
+        sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
+        sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
+        print(sensor_readings_ad)
+        if sensor_readings_ad == "beginFastest":
 
-            if sensor_readings_ad == "beginFastest":
-                fast_path = 'h|' + fast_path
-                connection_rpi.send_to_rpi((fast_path.encode('UTF-8')))
-                begin_fastest = True
-        while True:
-            pass
+            fast_path = fastest_path(grid, [7, 13])
+            connection_rpi.send_to_rpi((fast_path.encode('UTF-8')))
 
 
 if __name__ == '__main__':
