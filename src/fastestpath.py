@@ -1,5 +1,4 @@
 import numpy as np
-import json
 
 class Node:
     """
@@ -39,30 +38,6 @@ def return_path(current_node,maze):
     # Return reversed path as we need to show from start to end path
     path = path[::-1]
     return path
-
-class Connection:
-    def __init__(self):
-        self.socket = 0
-        self.host = '192.168.22.1'
-        self.port = 9999
-
-    def connect_to_rpi(self):
-        self.socket = socket.create_connection((self.host, self.port))
-        if socket is not 0:
-            print("connected successfully")
-
-    def send_to_rpi(self, message):
-        try:
-            self.socket.sendall(message)
-        except Exception as e:
-            print(e)
-
-    def close_connection(self):
-        self.socket.close()
-
-    def get_socket_instance(self):
-        return self.socket
-
 
 def search(maze, cost, start, end):
 
@@ -228,25 +203,16 @@ if __name__ == '__main__':
     end = [1,13] # ending position
     cost = 1 # cost per movement
 
-    connection_rpi = Connection()
-    connection_rpi.connect_to_rpi()
-
     path = search(maze, cost, start, end)
     print(path)
-    movement = []
+    movement = ''
     for i in range(len(path)):
         if i == 0:
             count = 0
         elif path[i-1][1] == path[i][1]:
             count += 1
         else:
-            movement.append([count, path[i-1][1]])
+            movement += str(count) + path[i-1][1]
             count = 0
-    movement.append([count, path[-1][1]])
-
-    for i in movement:
-        movement_json = {'map': {'steps': i[0],
-                        'direction': i[1]}}
-        movement_json = json.dumps(movement_json)
-        movement_json = 'a|' + movement_json
-        connection_rpi.send_to_rpi((movement_json.encode('UTF-8')))
+    movement += str(count) + path[i-1][1]
+    print(movement)
