@@ -200,7 +200,7 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
 
     elif robot_.direction == "S":
         if row_ != ROWS - 2:
-            if sensor_data['FL']:
+            if sensor_data['FR']:
                 grid_[row_ + 2][column_ - 1].obstacle = 1
             else:
                 grid_[row_ + 2][column_ - 1].obstacle = 0
@@ -208,7 +208,7 @@ def update_explored_cells(robot_, grid_, sensor_data):  # updates the map grid a
                 grid_[row_ + 2][column_].obstacle = 1
             else:
                 grid_[row_ + 2][column_].obstacle = 0
-            if sensor_data['FR']:
+            if sensor_data['FL']:
                 grid_[row_ + 2][column_ + 1].obstacle = 1
             else:
                 grid_[row_ + 2][column_ + 1].obstacle = 0
