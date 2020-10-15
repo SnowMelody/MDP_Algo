@@ -712,9 +712,9 @@ def fastest_path(grid_, waypoint):
         elif path[i-1][1] == path[i][1]:
             count += 1
         else:
-            movement += str(count) + path[i-1][1]
+            movement += path[i-1][1] + str(count)
             count = 0
-    movement += str(count) + path[i-1][1]
+    movement += path[i-1][1] + str(count)
     movement ='M' + movement + 'l'
 
     return movement
@@ -744,8 +744,7 @@ def main():
     
         if sensor_readings_ad == "beginFastest":
             if fastest_eligible is True:
-                fast_path = fastest_path(grid)
-                # TODO: send the fastest path to rpi
+               pass
             else:
                 print("Exploration is not completed. Insufficient information about maze. ")
         else:
@@ -805,11 +804,12 @@ def main():
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
 
     if fastest_eligible is True:
+        fast_path = fastest_path(grid)
         sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
         sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
         print(sensor_readings_ad)
         if sensor_readings_ad == "beginFastest":
-
+            fast_path = 'h|' + fast_path
             fast_path = fastest_path(grid, [7, 13])
             connection_rpi.send_to_rpi((fast_path.encode('UTF-8')))
 
