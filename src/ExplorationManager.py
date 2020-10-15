@@ -709,13 +709,13 @@ def fastest_path(grid_, waypoint):
     for i in range(len(path)):
         if i == 0:
             count = 0
-        elif path[i-1][1] == path[i][1]:
+        elif path[i - 1][1] == path[i][1]:
             count += 1
         else:
-            movement += path[i-1][1] + str(count)
+            movement += path[i - 1][1] + str(count)
             count = 0
-    movement += path[i-1][1] + str(count)
-    movement ='M' + movement + 'l'
+    movement += path[i - 1][1] + str(count)
+    movement = 'M' + movement + 'l'
 
     return movement
 
@@ -731,7 +731,7 @@ def main():
     connection_rpi = Connection()
     connection_rpi.connect_to_rpi()
     # enable the bottom line for no android start.
-    #connection_rpi.send_to_rpi('h|B'.encode('UTF-8'))
+    # connection_rpi.send_to_rpi('h|B'.encode('UTF-8'))
     robot = Robot()
     grid = create_maze_grid(ROWS, COLUMNS)
 
@@ -741,10 +741,10 @@ def main():
         print(sensor_readings_ad)
         if sensor_readings_ad == 'imgSuccess':
             continue
-    
+
         if sensor_readings_ad == "beginFastest":
             if fastest_eligible is True:
-               pass
+                continue
             else:
                 print("Exploration is not completed. Insufficient information about maze. ")
         else:
@@ -804,14 +804,15 @@ def main():
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
 
     if fastest_eligible is True:
-        fast_path = fastest_path(grid)
+        fast_path = fastest_path(grid, [7, 7])
         sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
         sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
         print(sensor_readings_ad)
         if sensor_readings_ad == "beginFastest":
             fast_path = 'h|' + fast_path
-            fast_path = fastest_path(grid, [7, 13])
             connection_rpi.send_to_rpi((fast_path.encode('UTF-8')))
+        while True:
+            pass
 
 
 if __name__ == '__main__':
