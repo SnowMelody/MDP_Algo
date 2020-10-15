@@ -95,6 +95,8 @@ def create_maze_grid(rows, columns):  # creates grid and updates it with cell ob
 def check_exploration_status(grid_):
     total_exp_grids = [cell.explored for item in grid_ for cell in item].count(1)
     print('Explored cells:', total_exp_grids)
+    if total_exp_grids > 294:
+        return True
     # For checking purposes (to be removed once verified code works properly)
     if total_exp_grids >= 280:
         for i in range(ROWS):
@@ -728,6 +730,8 @@ def main():
     prev_explored_total, curr_explored_total = 0, 0
     connection_rpi = Connection()
     connection_rpi.connect_to_rpi()
+    # enable the bottom line for no android start.
+    #connection_rpi.send_to_rpi('h|B'.encode('UTF-8'))
     robot = Robot()
     grid = create_maze_grid(ROWS, COLUMNS)
 
@@ -735,7 +739,10 @@ def main():
         sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
         sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
         print(sensor_readings_ad)
-        if sensor_readings_ad == "begin fastest":
+        if sensor_readings_ad == 'imgSuccess':
+            continue
+    
+        if sensor_readings_ad == "beginFastest":
             if fastest_eligible is True:
                 fast_path = fastest_path(grid)
                 # TODO: send the fastest path to rpi
@@ -796,6 +803,15 @@ def main():
         send_data_simulator(grid, robot)
         connection_rpi.send_to_rpi(robot_status_update_formatted.encode('UTF-8'))
         connection_rpi.send_to_rpi((mdf_status_update.encode('UTF-8')))
+
+    if fastest_eligible is True:
+        sensor_readings_ad = connection_rpi.get_socket_instance().recv(1024)
+        sensor_readings_ad = sensor_readings_ad.decode('UTF-8')
+        print(sensor_readings_ad)
+        if sensor_readings_ad == "beginFastest":
+
+            fast_path = fastest_path(grid, [7, 13])
+            connection_rpi.send_to_rpi((fast_path.encode('UTF-8')))
 
 
 if __name__ == '__main__':
